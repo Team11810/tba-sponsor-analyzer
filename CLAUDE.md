@@ -37,6 +37,10 @@ jq --argjson n 10 'sort_by(-.qty)[:$n] | map({sponsor, qty})' sponsors.json
 
 # Top N sponsors in Utah, by Utah team count
 jq --argjson n 10 '[.[] | select(.qty_utah > 0)] | sort_by(-.qty_utah)[:$n] | map({sponsor, qty_utah})' sponsors.json
+
+# All sponsors (drop the [:$n] slice), or all sponsors with Utah teams
+jq 'sort_by(-.qty) | map({sponsor, qty})' sponsors.json
+jq '[.[] | select(.qty_utah > 0)] | sort_by(-.qty_utah) | map({sponsor, qty_utah})' sponsors.json
 ```
 
 ## Architecture

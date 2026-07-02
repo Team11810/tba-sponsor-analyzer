@@ -160,6 +160,20 @@ jq --argjson n 10 '[.[] | select(.qty_utah > 0)] | sort_by(-.qty_utah)[:$n] | ma
 
 You can change `--argjson n 10` to any number to see more or fewer results.
 
+**Every sponsor, not just the top few** (drop the `[:$n]` slice and the `--argjson n` argument to see the whole sorted list):
+
+```sh
+jq 'sort_by(-.qty) | map({sponsor, qty})' sponsors.json
+```
+
+**Every sponsor with at least one Utah team**, sorted by Utah team count:
+
+```sh
+jq '[.[] | select(.qty_utah > 0)] | sort_by(-.qty_utah) | map({sponsor, qty_utah})' sponsors.json
+```
+
+These print thousands of lines to your terminal — if you want to save the output to a file instead of scrolling through it, add ` > sponsors_by_qty.json` (or any filename you like) to the end of the command.
+
 ## How sponsor extraction works (and why it's not perfect)
 
 TBA doesn't have a dedicated "sponsors" field — sponsor names are packed into each team's `name` field as unstructured text, shaped roughly like:
