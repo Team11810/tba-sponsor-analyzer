@@ -1,0 +1,2 @@
+tba-api-v3client @ git+https://github.com/TBA-API/tba-api-client-python.git
+python-dotenv
