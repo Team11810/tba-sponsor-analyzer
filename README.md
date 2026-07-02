@@ -32,14 +32,14 @@ python extract_sponsors.py
 
 Reads `teams.csv` and writes `sponsors.json`, an array of records shaped like:
 
-```json
+```jsonc
 {
   "sponsor": "Boeing",
   "qty": 218,
   "num_utah": 3,
   "teams": [
-    {"team_number": 31, "state": "Oklahoma"},
-    ...
+    {"team_number": 31, "state": "Oklahoma"}
+    // ...more teams
   ]
 }
 ```
