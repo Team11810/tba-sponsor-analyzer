@@ -125,7 +125,7 @@ This reads `teams.csv`, figures out the sponsors hidden in each team's `name` fi
 {
   "sponsor": "Boeing",
   "qty": 218,
-  "num_utah": 3,
+  "qty_utah": 3,
   "teams": [
     {"team_number": 31, "state": "Oklahoma"}
     // ...more teams
@@ -137,7 +137,7 @@ Here's what each field means:
 
 - `sponsor` — the sponsor's name.
 - `qty` — how many teams list this sponsor.
-- `num_utah` — how many of those teams are based in the state of Utah.
+- `qty_utah` — how many of those teams are based in the state of Utah.
 - `teams` — a list of every team that has this sponsor, including that team's number and the state it's from.
 
 The file is sorted with the most common sponsors first.
@@ -155,7 +155,7 @@ jq --argjson n 10 'sort_by(-.qty)[:$n] | map({sponsor, qty})' sponsors.json
 **Top 10 sponsors in Utah, by number of Utah teams:**
 
 ```sh
-jq --argjson n 10 '[.[] | select(.num_utah > 0)] | sort_by(-.num_utah)[:$n] | map({sponsor, num_utah})' sponsors.json
+jq --argjson n 10 '[.[] | select(.qty_utah > 0)] | sort_by(-.qty_utah)[:$n] | map({sponsor, qty_utah})' sponsors.json
 ```
 
 You can change `--argjson n 10` to any number to see more or fewer results.

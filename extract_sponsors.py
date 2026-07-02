@@ -63,7 +63,7 @@ def main() -> None:
         {
             "sponsor": sponsor,
             "qty": len(teams_for_sponsor),
-            "num_utah": sum(1 for t in teams_for_sponsor if t["state"] == "Utah"),
+            "qty_utah": sum(1 for t in teams_for_sponsor if t["state"] == "Utah"),
             "teams": teams_for_sponsor,
         }
         for sponsor, teams_for_sponsor in sponsors.items()
