@@ -15,15 +15,13 @@ a best-effort heuristic, not exact:
 """
 
 import csv
+import json
 import re
 import sys
 from collections import OrderedDict
 
-from csv_utils import csv_safe
-
 INPUT_PATH = "teams.csv"
-OUTPUT_PATH = "sponsors.csv"
-FIELDS = ["sponsor", "qty", "team_numbers", "states"]
+OUTPUT_PATH = "sponsors.json"
 
 _WHITESPACE_RE = re.compile(r"\s+")
 
@@ -53,28 +51,29 @@ def main() -> None:
     except FileNotFoundError:
         sys.exit(f"{INPUT_PATH} not found. Run export_teams.py first.")
 
-    sponsors: dict[str, dict] = {}
+    sponsors: dict[str, list[dict]] = {}
     for team in teams:
         for sponsor in parse_sponsors(team["name"]):
-            entry = sponsors.setdefault(sponsor, {"qty": 0, "team_numbers": [], "states": []})
-            entry["qty"] += 1
-            entry["team_numbers"].append(team["team_number"])
-            entry["states"].append(team["state_prov"])
-
-    rows = sorted(sponsors.items(), key=lambda item: (-item[1]["qty"], item[0]))
-
-    with open(OUTPUT_PATH, "w", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(f, fieldnames=FIELDS)
-        writer.writeheader()
-        for sponsor, entry in rows:
-            writer.writerow({
-                "sponsor": csv_safe(sponsor),
-                "qty": entry["qty"],
-                "team_numbers": ";".join(entry["team_numbers"]),
-                "states": ";".join(entry["states"]),
+            sponsors.setdefault(sponsor, []).append({
+                "team_number": int(team["team_number"]),
+                "state": team["state_prov"],
             })
 
-    print(f"Wrote {len(rows)} unique sponsors to {OUTPUT_PATH}")
+    records = [
+        {
+            "sponsor": sponsor,
+            "qty": len(teams_for_sponsor),
+            "num_utah": sum(1 for t in teams_for_sponsor if t["state"] == "Utah"),
+            "teams": teams_for_sponsor,
+        }
+        for sponsor, teams_for_sponsor in sponsors.items()
+    ]
+    records.sort(key=lambda r: (-r["qty"], r["sponsor"]))
+
+    with open(OUTPUT_PATH, "w", encoding="utf-8") as f:
+        json.dump(records, f, indent=2, ensure_ascii=False)
+
+    print(f"Wrote {len(records)} unique sponsors to {OUTPUT_PATH}")
 
 
 if __name__ == "__main__":
