@@ -9,16 +9,11 @@ import tbaapiv3client
 from tbaapiv3client.api.team_api import TeamApi
 from tbaapiv3client.rest import ApiException
 
+from csv_utils import csv_safe
+
 YEAR = 2025
 OUTPUT_PATH = "teams.csv"
 FIELDS = ["team_number", "key", "nickname", "name", "city", "state_prov", "country", "website"]
-FORMULA_TRIGGERS = ("=", "+", "-", "@", "\t", "\r")
-
-
-def _csv_safe(value) -> str:
-    """Prefix values that spreadsheet apps would interpret as formulas."""
-    s = "" if value is None else str(value)
-    return "'" + s if s.startswith(FORMULA_TRIGGERS) else s
 
 
 def main() -> None:
@@ -55,7 +50,7 @@ def main() -> None:
         writer = csv.DictWriter(f, fieldnames=FIELDS)
         writer.writeheader()
         for team in teams:
-            writer.writerow({field: _csv_safe(getattr(team, field)) for field in FIELDS})
+            writer.writerow({field: csv_safe(getattr(team, field)) for field in FIELDS})
 
     print(f"Wrote {len(teams)} teams to {OUTPUT_PATH}")
 

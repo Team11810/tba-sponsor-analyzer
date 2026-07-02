@@ -24,3 +24,11 @@ python export_teams.py
 ```
 
 Writes `teams.csv` with columns: `team_number, key, nickname, name, city, state_prov, country, website`.
+
+```sh
+python extract_sponsors.py
+```
+
+Reads `teams.csv` and writes `sponsors.csv` with columns: `sponsor, qty, team_numbers, states` (the latter two semicolon-separated, positionally parallel to each other).
+
+TBA has no dedicated sponsor field; the `name` field is unstructured text shaped like `Sponsor1/Sponsor2/Sponsor3&School Name`. `extract_sponsors.py` splits on `/` for sponsors and peels a trailing school name off the last segment via its rightmost `&`. This is a best-effort heuristic: about 800 of 3731 teams have more than one `&` in their name (sponsor names that legitimately contain `&`, e.g. "Florida Power & Light", or teams with multiple chained school/org affiliations), and those can produce a stray fragment in the sponsor or school position. Not fixable without manual review of TBA's raw data.
